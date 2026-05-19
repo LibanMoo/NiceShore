@@ -9,7 +9,7 @@ import (
 
 func Migrate() {
 	err := postgres.DB.AutoMigrate(
-		&models.UserModel{},
+		&models.User{},
 	)
 
 	if err != nil {

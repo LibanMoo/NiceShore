@@ -4,7 +4,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type UserModel struct {
+type User struct {
 	BaseModel
 
 	ID         uuid.UUID `gorm:"type:uuid;primaryKey;"`
