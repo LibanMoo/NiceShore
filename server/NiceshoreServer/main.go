@@ -2,7 +2,10 @@ package main
 
 import (
 	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/config"
+	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/database/migrations"
 	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/database/postgres"
+
+	// "github.com/LibanMoo/NiceShore/server/NiceshoreServer/database/postgres/migrations"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,7 +14,7 @@ func main() {
 	config.LoadEnv()
 
 	postgres.DBconn()
-
+	migrations.Migrate()
 	r := gin.Default()
 
 	r.GET("/", func(c *gin.Context) {
