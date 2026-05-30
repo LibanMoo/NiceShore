@@ -10,6 +10,10 @@ import (
 func Migrate() {
 	err := postgres.DB.AutoMigrate(
 		&models.User{},
+		&models.Role{},
+		&models.Permission{},
+		&models.UserRole{},
+		&models.RolePermission{},
 	)
 
 	if err != nil {
