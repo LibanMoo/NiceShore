@@ -4,6 +4,7 @@ import (
 	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/config"
 	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/database/migrations"
 	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/database/postgres"
+	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/router/http"
 
 	// "github.com/LibanMoo/NiceShore/server/NiceshoreServer/database/postgres/migrations"
 
@@ -22,6 +23,6 @@ func main() {
 			"message": "Beach safe API is running succefully",
 		})
 	})
-
+	http.AuthRoutes(r)
 	r.Run(":8080")
 }
