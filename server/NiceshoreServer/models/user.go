@@ -7,7 +7,7 @@ import (
 type User struct {
 	BaseModel
 
-	ID         uuid.UUID `gorm:"type:uuid;primaryKey;"`
+	ID         uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey;"`
 	Username   string    `gorm:"unique;not null"`
 	FullName   string    `gorm:"not null"`
 	Email      string    `gorm:"unique;not null"`
