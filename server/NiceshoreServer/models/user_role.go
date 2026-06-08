@@ -1,13 +1,13 @@
 package models
 
-import (
-	"github.com/google/uuid"
-)
+import "github.com/google/uuid"
 
 type UserRole struct {
 	BaseModel
 
-	ID     uuid.UUID `gorm:"type:uuid;primaryKey;"`
-	RoleID int
-	Role   Role `gorm:"foreignKey:RoleID;references:ID"`
+	UserID uuid.UUID `gorm:"type:uuid;primaryKey"`
+	User   User      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
+
+	RoleID uuid.UUID `gorm:"type:uuid;primaryKey"`
+	Role   Role      `gorm:"foreignKey:RoleID;constraint:OnDelete:CASCADE"`
 }
