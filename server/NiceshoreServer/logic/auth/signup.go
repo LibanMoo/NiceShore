@@ -60,7 +60,7 @@ func Signup(c *gin.Context) {
 
 	db := postgres.DB
 
-	err = utils.CreateDefaultRole(db, user.ID, "user")
+	err = utils.AssignRole(db, user.ID, "user")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to assign default role",
