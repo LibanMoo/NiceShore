@@ -3,6 +3,7 @@ package auth
 import (
 	"net/http"
 
+	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/database/postgres"
 	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/models"
 	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/repository"
 	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/utils"
@@ -55,6 +56,17 @@ func Signup(c *gin.Context) {
 		})
 		return
 	}
+	postgres.DBconn()
+
+	db := postgres.DB
+
+	err = utils.CreateDefaultRole(db, user.ID, "user")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to assign default role",
+		})
+		return
+	}
 
 	refreshToken, err := utils.GenerateRefreshToken(user.ID)
 	if err != nil {
@@ -78,5 +90,4 @@ func Signup(c *gin.Context) {
 		"refresh_token": refreshToken,
 		"access_token":  accessToken,
 	})
-
 }
