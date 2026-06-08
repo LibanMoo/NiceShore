@@ -56,9 +56,27 @@ func Signup(c *gin.Context) {
 		return
 	}
 
+	refreshToken, err := utils.GenerateRefreshToken(user.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to generate refresh token",
+		})
+		return
+	}
+
+	accessToken, err := utils.GenerateAccessToken(user.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to generate access token",
+		})
+		return
+	}
+
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "user created sucessfully",
-		"user_id": user.ID,
+		"message":       "user created sucessfully",
+		"user_id":       user.ID,
+		"refresh_token": refreshToken,
+		"access_token":  accessToken,
 	})
 
 }
