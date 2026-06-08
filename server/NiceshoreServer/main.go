@@ -1,7 +1,11 @@
 package main
 
 import (
+	"log"
+	"os"
+
 	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/config"
+	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/console/cmd"
 	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/database/migrations"
 	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/database/postgres"
 	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/router/http"
@@ -16,6 +20,15 @@ func main() {
 
 	postgres.DBconn()
 	migrations.Migrate()
+
+	// Handle seed command
+	if len(os.Args) > 1 && os.Args[1] == "seed" {
+		if err := cmd.Seed(postgres.DB); err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
+
 	r := gin.Default()
 
 	r.GET("/", func(c *gin.Context) {
