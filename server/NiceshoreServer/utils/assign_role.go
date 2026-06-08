@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreateDefaultRole(db *gorm.DB, userID uuid.UUID, roleName string) error {
+func AssignRole(db *gorm.DB, userID uuid.UUID, roleName string) error {
 	roleID, err := models.GetRoleIDByName(db, roleName)
 	if err != nil {
 		return err
