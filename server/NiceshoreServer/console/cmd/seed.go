@@ -16,6 +16,9 @@ func Seed(db *gorm.DB) error {
 	if err := seeders.SeedRoles(db); err != nil {
 		log.Fatal("Failed to seed roles: ", err)
 	}
+	if err := seeders.SeedRolePermissions(db); err != nil {
+		log.Fatal("Failed to seed role permissions: ", err)
+	}
 
 	log.Println("Database seeding completed")
 	return nil
