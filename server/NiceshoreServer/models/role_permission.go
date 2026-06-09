@@ -7,7 +7,9 @@ import (
 type RolePermission struct {
 	BaseModel
 
-	ID           uuid.UUID `gorm:"type:uuid;primaryKey:"`
-	PermissionID int
-	Permission   Permission `gorm:"foreignKey:PermissionID;references:ID"`
+	RoleID uuid.UUID `gorm:"type:uuid;primaryKey"`
+	Role   Role      `gorm:"foreignKey:RoleID;constraint:OnDelete:CASCADE"`
+
+	PermissionID uuid.UUID  `gorm:"type:uuid;primaryKey"`
+	Permission   Permission `gorm:"foreignKey:PermissionID;constraint:OnDelete:CASCADE"`
 }
