@@ -16,3 +16,7 @@ func GetRefreshToken(token string) (*models.RefreshToken, error) {
 	}
 	return &refreshToken, nil
 }
+
+func DeleteRefreshToken(token string) error {
+	return postgres.DB.Where("token = ?", token).Delete(&models.RefreshToken{}).Error
+}
