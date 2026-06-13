@@ -10,5 +10,6 @@ func AuthRoutes(router *gin.Engine) {
 	{
 		authGroup.POST("signup", auth.Signup)
 		authGroup.POST("login", auth.Login)
+		authGroup.POST("refresh", auth.Refresh)
 	}
 }
