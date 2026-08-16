@@ -65,7 +65,18 @@ func Refresh(c *gin.Context) {
 		return
 	}
 
+	newRefreshToken, err := utils.GenerateRefreshToken(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to generate refresh token",
+		})
+		return
+	}
+	// Delete the old refresh token from the database
+	repository.DeleteRefreshToken(request.RefreshToken)
+
 	c.JSON(http.StatusOK, gin.H{
-		"access_token": newAccessToken,
+		"access_token":  newAccessToken,
+		"refresh_token": newRefreshToken,
 	})
 }
