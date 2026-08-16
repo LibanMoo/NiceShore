@@ -40,3 +40,22 @@ func GenerateRefreshToken(userID uuid.UUID) (string, error) {
 
 	return tokenString, nil
 }
+
+func ValidateRefreshToken(tokenString string) (jwt.MapClaims, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, jwt.ErrSignatureInvalid
+		}
+		return []byte(os.Getenv("JWT_REFRESH_SECRET_KEY")), nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	if !token.Valid {
+		return nil, jwt.ErrInvalidKey
+	}
+	if claims, ok := token.Claims.(jwt.MapClaims); ok {
+		return claims, nil
+	}
+	return nil, jwt.ErrInvalidKey
+}
