@@ -1,6 +1,6 @@
 # NiceShore
 
-NiceShore is a coastal-themed digital platform with a premium SaaS look and a Go-based backend API. The project combines a refined visual identity inspired by ocean and shoreline tones with a server that handles authentication, user management, and beach-related data.
+NiceShore is a coastal-themed digital platform with a premium SaaS . The project combines a refined visual identity inspired by ocean and shoreline tones with a server that handles authentication, user management, and beach-related data.
 
 ## System Overview
 
@@ -67,20 +67,20 @@ The server is built with:
 ```text
 NiceShore/
 +-- client/
-¦   +-- design.md
+ï¿½   +-- design.md
 +-- server/
-¦   +-- NiceshoreServer/
-¦       +-- config/
-¦       +-- console/
-¦       +-- database/
-¦       +-- logic/
-¦       +-- models/
-¦       +-- repository/
-¦       +-- router/
-¦       +-- utils/
-¦       +-- go.mod
-¦       +-- main.go
-¦       +-- readme.md
+ï¿½   +-- NiceshoreServer/
+ï¿½       +-- config/
+ï¿½       +-- console/
+ï¿½       +-- database/
+ï¿½       +-- logic/
+ï¿½       +-- models/
+ï¿½       +-- repository/
+ï¿½       +-- router/
+ï¿½       +-- utils/
+ï¿½       +-- go.mod
+ï¿½       +-- main.go
+ï¿½       +-- readme.md
 +-- readme.md
 +-- .env.example (if configured locally)
 ```
