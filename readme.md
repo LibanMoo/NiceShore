@@ -1,6 +1,6 @@
 # NiceShore
 
-NiceShore is a coastal-themed digital platform with a premium SaaS . The project combines a refined visual identity inspired by ocean and shoreline tones with a server that handles authentication, user management, and beach-related data.
+NiceShore is a coastal-themed digital platform . The project combines a refined visual identity inspired by ocean and shoreline tones with a server that handles authentication, user management, and beach-related data.
 
 ## System Overview
 
