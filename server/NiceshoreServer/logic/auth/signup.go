@@ -3,6 +3,8 @@ package auth
 import (
 	"net/http"
 
+	"time"
+
 	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/database/postgres"
 	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/models"
 	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/repository"
@@ -11,9 +13,10 @@ import (
 )
 
 type SignupRequest struct {
-	Username string
+	Fullname string
 	Email    string
 	Password string
+	Dob      string
 }
 
 func Signup(c *gin.Context) {
@@ -42,10 +45,13 @@ func Signup(c *gin.Context) {
 		return
 	}
 
+	parsedDate, err := time.Parse(time.DateOnly, request.Dob)
+
 	user := models.User{
-		Username: request.Username,
+		FullName: request.Fullname,
 		Email:    request.Email,
 		Password: hashedPassword,
+		Dob:      parsedDate,
 	}
 
 	err = repository.CreateUser(&user)
@@ -68,26 +74,8 @@ func Signup(c *gin.Context) {
 		return
 	}
 
-	refreshToken, err := utils.GenerateRefreshToken(user.ID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to generate refresh token",
-		})
-		return
-	}
-
-	accessToken, err := utils.GenerateAccessToken(user.ID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to generate access token",
-		})
-		return
-	}
-
 	c.JSON(http.StatusCreated, gin.H{
-		"message":       "user created sucessfully",
-		"user_id":       user.ID,
-		"refresh_token": refreshToken,
-		"access_token":  accessToken,
+		"message": "user created sucessfully",
+		"user_id": user.ID,
 	})
 }
