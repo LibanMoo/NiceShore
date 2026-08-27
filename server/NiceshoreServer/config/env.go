@@ -10,6 +10,6 @@ func LoadEnv() {
 	err := godotenv.Load()
 
 	if err != nil {
-		log.Fatal("can not load Env")
+		log.Fatal("can not load Env: ", err)
 	}
 }
