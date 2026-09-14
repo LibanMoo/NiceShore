@@ -1,8 +1,8 @@
 -- +goose Up
 
 CREATE TABLE saved_beaches (
-    user_id integer NOT NULL,
-    beach_id integer NOT NULL,
+    user_id uuid NOT NULL,
+    beach_id uuid NOT NULL,
 
     PRIMARY KEY (user_id, beach_id),
 
@@ -14,7 +14,10 @@ CREATE TABLE saved_beaches (
     CONSTRAINT fk_saved_beaches_beach
         FOREIGN KEY (beach_id)
         REFERENCES beaches(id)
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
+    
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp
 );
 
 -- +goose Down
