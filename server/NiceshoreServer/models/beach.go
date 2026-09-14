@@ -1,11 +1,19 @@
 package models
 
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
+
 type Beach struct {
-	BaseModel
-	ID          string `gorm:"primaryKey;not null"`
+	ID          string `gorm:"type:uuid;default:gen_random_uuid();primaryKey;"`
 	Name        string
 	Description string
-	Country     string
-	City        string
-	Location    string
+	Longitude   string
+	Latitude    string
+	CreatedAt   time.Time `gorm:"autoCreateTime;"`
+	UpdatedAt   time.Time `gorm:"autoUpdateTime;"`
+	CreatedBy   uuid.UUID `gorm:"type:uuid;not null"`
+	UpdatedBy   uuid.UUID `gorm:"type:uuid;not null"`
 }
