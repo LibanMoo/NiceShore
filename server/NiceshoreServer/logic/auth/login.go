@@ -35,26 +35,28 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := utils.GenerateAccessToken(user.ID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to generate access token",
-		})
-		return
-	}
+	// temporary disabled the generation of access token and refresh token
 
-	refreshToken, err := utils.GenerateRefreshToken(user.ID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to generate refresh token",
-		})
-		return
-	}
+	// accessToken, err := utils.GenerateAccessToken(user.ID)
+	// if err != nil {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{
+	// 		"error": "Failed to generate access token",
+	// 	})
+	// 	return
+	// }
+
+	// refreshToken, err := utils.GenerateRefreshToken(user.ID)
+	// if err != nil {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{
+	// 		"error": "Failed to generate refresh token",
+	// 	})
+	// 	return
+	// }
 
 	c.JSON(http.StatusOK, gin.H{
-		"access_token":  accessToken,
-		"refresh_token": refreshToken,
-		"user_id":       user.ID,
+		// "access_token":  accessToken,
+		// "refresh_token": refreshToken,
+		"user_id": user.ID,
 	})
 
 }
