@@ -33,6 +33,9 @@ func main() {
 			"message": "Beach safe API is running succefully",
 		})
 	})
-	http.AuthRoutes(r)
+	api := r.Group("/api")
+
+	http.AuthRoutes(api)
+	http.BeachRoutes(api)
 	r.Run(":8080")
 }
