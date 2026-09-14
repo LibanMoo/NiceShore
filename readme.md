@@ -48,8 +48,7 @@ The server is built with:
 
 ### Main features
 
-- User signup
-- User login
+- User Authentication features (signup , signin)
 - Refresh token flow
 - Role assignment
 - Database migration setup
