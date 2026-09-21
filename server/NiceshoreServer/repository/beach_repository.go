@@ -17,3 +17,11 @@ func GetBeachByID(id uuid.UUID) (*models.Beach, error) {
 	}
 	return &beach, nil
 }
+
+func GetBeach(id uuid.UUID) (*models.Beach, error) {
+	var beach models.Beach
+	if err := postgres.DB.First(&beach, "id = ?", id).Error; err != nil {
+		return nil, err
+	}
+	return &beach, nil
+}
