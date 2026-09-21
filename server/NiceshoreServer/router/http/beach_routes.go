@@ -12,6 +12,7 @@ func BeachRoutes(api *gin.RouterGroup) {
 	BeachGroup := api.Group("/beaches")
 	{
 		BeachGroup.POST("/create", Controller.CreateBeach)
+		BeachGroup.GET("/getbeach/:id", Controller.GetBeachInfo)
 	}
 
 }
