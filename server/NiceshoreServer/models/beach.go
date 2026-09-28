@@ -12,6 +12,7 @@ type Beach struct {
 	Description string
 	Longitude   string
 	Latitude    string
+	ImageURL    string    `gorm:"type:varchar(255);"`
 	Status      string    `gorm:"type:varchar(50);not null;default:'open'"`
 	CreatedAt   time.Time `gorm:"autoCreateTime;"`
 	UpdatedAt   time.Time `gorm:"autoUpdateTime;"`
