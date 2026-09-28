@@ -18,34 +18,6 @@ import (
 
 func CreateBeach(c *gin.Context) {
 	var request dto.BeachRequestDTO
-	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-	}
-	CreatedBy, err := uuid.Parse(request.CreatedBy)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid CreatedBy UUID",
-		})
-		return
-	}
-	UpdatedBy, err := uuid.Parse(request.UpdatedBy)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid UpdatedBy UUID",
-		})
-		return
-	}
-	beach := &models.Beach{
-		Name:        request.Name,
-		Description: request.Description,
-		Longitude:   request.Longitude,
-		Latitude:    request.Latitude,
-		CreatedBy:   CreatedBy,
-		UpdatedBy:   UpdatedBy,
-	}
-	fmt.Println("Beach to be created:", beach)
 
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -53,6 +25,41 @@ func CreateBeach(c *gin.Context) {
 		})
 		return
 	}
+
+	createdBy, err := uuid.Parse(request.CreatedBy)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid CreatedBy UUID",
+		})
+		return
+	}
+
+	updatedBy, err := uuid.Parse(request.UpdatedBy)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid UpdatedBy UUID",
+		})
+		return
+	}
+
+	beach := &models.Beach{
+		Name:        request.Name,
+		Description: request.Description,
+		Longitude:   request.Longitude,
+		Latitude:    request.Latitude,
+		Status:      request.Status,
+		ImageURL:    request.ImageURL,
+		CreatedBy:   createdBy,
+		UpdatedBy:   updatedBy,
+	}
+
+	if err := repository.CreateBeach(beach); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to create beach",
+		})
+		return
+	}
+
 	c.JSON(http.StatusCreated, gin.H{
 		"beach": beach,
 	})
@@ -118,4 +125,8 @@ func GetBeachInfo(c *gin.Context) {
 		"beach": beach,
 		"tides": tides,
 	})
+}
+
+func GetAllBeaches(c *gin.Context) {
+
 }
