@@ -5,8 +5,7 @@ import (
 	"os"
 
 	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/config"
-	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/console/cmd"
-	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/database/migrations"
+	cmd "github.com/LibanMoo/NiceShore/server/NiceshoreServer/console/cmd/seed"
 	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/database/postgres"
 	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/router/http"
 
@@ -19,8 +18,6 @@ func main() {
 	config.LoadEnv()
 
 	postgres.DBconn()
-	migrations.Migrate()
-
 	// Handle seed command
 	if len(os.Args) > 1 && os.Args[1] == "seed" {
 		if err := cmd.Seed(postgres.DB); err != nil {
@@ -36,6 +33,9 @@ func main() {
 			"message": "Beach safe API is running succefully",
 		})
 	})
-	http.AuthRoutes(r)
+	api := r.Group("/api")
+
+	http.AuthRoutes(api)
+	http.BeachRoutes(api)
 	r.Run(":8080")
 }
