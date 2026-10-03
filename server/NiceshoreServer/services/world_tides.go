@@ -32,14 +32,25 @@ type WorldTidesTime struct {
 func (t *WorldTidesTime) UnmarshalJSON(data []byte) error {
 	value := strings.Trim(string(data), `"`)
 
-	parsed, err := time.Parse("2006-01-02T15:04-0700", value)
-	if err != nil {
-		return err
+	formats := []string{
+		time.RFC3339,
+		"2006-01-02T15:04-0700",
 	}
 
-	t.Time = parsed
+	for _, format := range formats {
+		parsed, err := time.Parse(format, value)
+		if err == nil {
+			t.Time = parsed
+			return nil
+		}
+	}
 
-	return nil
+	return fmt.Errorf("invalid WorldTides date: %s", value)
+}
+
+type CurrentTideResponse struct {
+	Date   time.Time `json:"date"`
+	Height float64   `json:"height"`
 }
 
 func GetTides(latitude, longitude, apiKey string) (*WorldTidesResponse, error) {
@@ -89,4 +100,34 @@ func GetTides(latitude, longitude, apiKey string) (*WorldTidesResponse, error) {
 	}
 
 	return &data, nil
+}
+
+func GetCurrentTide(tides *WorldTidesResponse, timezone string) (*CurrentTideResponse, error) {
+	if tides == nil || len(tides.Heights) == 0 {
+		return nil, fmt.Errorf("no tide heights available")
+	}
+	loc, err := time.LoadLocation(timezone)
+	if err != nil {
+		return nil, fmt.Errorf("invalid timezone: %w", err)
+	}
+
+	// Get the current time in the beach's timezone.
+	now := time.Now().In(loc)
+
+	closestHeight := tides.Heights[0]
+	smallestDifference := now.Sub(closestHeight.Date.Time).Abs()
+
+	for _, height := range tides.Heights[1:] {
+		difference := now.Sub(height.Date.Time).Abs()
+
+		if difference < smallestDifference {
+			smallestDifference = difference
+			closestHeight = height
+		}
+	}
+
+	return &CurrentTideResponse{
+		Date:   closestHeight.Date.Time.In(loc),
+		Height: closestHeight.Height,
+	}, nil
 }
