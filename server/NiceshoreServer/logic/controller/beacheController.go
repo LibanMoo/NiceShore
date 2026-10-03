@@ -129,4 +129,81 @@ func GetBeachInfo(c *gin.Context) {
 
 func GetAllBeaches(c *gin.Context) {
 
+	config.LoadEnv()
+
+	worldTidesApiKey := os.Getenv("WORLD_TIDES_API_KEY")
+
+	if worldTidesApiKey == "" {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "WorldTides API key is not configured",
+		})
+		return
+	}
+
+	beaches, err := repository.GetAllBeaches()
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to retrieve beaches",
+		})
+		return
+	}
+
+	var response []dto.BeachResponseDTO
+
+	for _, beach := range beaches {
+
+		tides, err := services.GetTides(
+			beach.Latitude,
+			beach.Longitude,
+			worldTidesApiKey,
+		)
+
+		if err != nil {
+			fmt.Println(
+				"Failed to retrieve tides for",
+				beach.Name,
+				":",
+				err,
+			)
+
+			// Don't fail the entire Explore page
+			response = append(response, dto.BeachResponseDTO{
+				ID:          beach.ID,
+				Name:        beach.Name,
+				Description: beach.Description,
+				Latitude:    beach.Latitude,
+				Longitude:   beach.Longitude,
+				Status:      beach.Status,
+				CurrentTide: nil,
+			})
+
+			continue
+		}
+
+		currentTide, err := services.GetCurrentTide(tides, beach.Timezone)
+
+		var currentTideDTO *dto.CurrentTideDTO
+
+		if currentTide != nil {
+			currentTideDTO = &dto.CurrentTideDTO{
+				Date:   currentTide.Date,
+				Height: currentTide.Height,
+			}
+		}
+
+		response = append(response, dto.BeachResponseDTO{
+			ID:          beach.ID,
+			Name:        beach.Name,
+			Description: beach.Description,
+			Latitude:    beach.Latitude,
+			Longitude:   beach.Longitude,
+			Status:      beach.Status,
+			CurrentTide: currentTideDTO,
+		})
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"beaches": response,
+	})
 }
