@@ -5,8 +5,9 @@ type BeachRequestDTO struct {
 	Description string `json:"description"`
 	Longitude   string `json:"longitude" binding:"required"`
 	Latitude    string `json:"latitude" binding:"required"`
-	Status      string `json:"status" binding:"required"`
+	Status      string `json:"status"`
 	ImageURL    string `json:"image_url"`
+	Timezone    string `json:"timezone"`
 	CreatedBy   string `json:"created_by" binding:"required"`
 	UpdatedBy   string `json:"updated_by" binding:"required"`
 }
