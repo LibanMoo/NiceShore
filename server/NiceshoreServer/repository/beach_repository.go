@@ -25,3 +25,11 @@ func GetBeach(id uuid.UUID) (*models.Beach, error) {
 	}
 	return &beach, nil
 }
+
+func GetAllBeaches() ([]models.Beach, error) {
+	var beaches []models.Beach
+	if err := postgres.DB.Find(&beaches).Error; err != nil {
+		return nil, err
+	}
+	return beaches, nil
+}
