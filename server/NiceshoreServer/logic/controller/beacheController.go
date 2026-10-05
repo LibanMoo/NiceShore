@@ -192,14 +192,41 @@ func GetAllBeaches(c *gin.Context) {
 			}
 		}
 
+		prediction, err := services.PredictTideDirection(
+			tides,
+			"Africa/Mogadishu",
+		)
+
+		if err != nil {
+			fmt.Println("Tide prediction error:", err)
+
+			c.JSON(http.StatusBadGateway, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		var predictionDTO *dto.TidePredictionDTO
+
+		if prediction != nil {
+			predictionDTO = &dto.TidePredictionDTO{
+				Direction:      prediction.Direction,
+				CurrentHeight:  prediction.CurrentHeight,
+				CurrentTime:    prediction.CurrentTime,
+				UpcomingHeight: prediction.UpcomingHeight,
+				UpcomingTime:   prediction.UpcomingTime,
+				Change:         prediction.Change,
+			}
+		}
+
 		response = append(response, dto.BeachResponseDTO{
-			ID:          beach.ID,
-			Name:        beach.Name,
-			Description: beach.Description,
-			Latitude:    beach.Latitude,
-			Longitude:   beach.Longitude,
-			Status:      beach.Status,
-			CurrentTide: currentTideDTO,
+			ID:             beach.ID,
+			Name:           beach.Name,
+			Description:    beach.Description,
+			Latitude:       beach.Latitude,
+			Longitude:      beach.Longitude,
+			Status:         beach.Status,
+			CurrentTide:    currentTideDTO,
+			TidePrediction: predictionDTO,
 		})
 	}
 
