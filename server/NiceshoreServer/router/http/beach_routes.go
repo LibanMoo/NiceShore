@@ -3,7 +3,7 @@ package http
 import (
 	"log"
 
-	Controller "github.com/LibanMoo/NiceShore/server/NiceshoreServer/logic/controller"
+	Controller "github.com/LibanMoo/NiceShore/server/NiceshoreServer/logic/Controller"
 	"github.com/gin-gonic/gin"
 )
 
