@@ -37,5 +37,6 @@ func main() {
 
 	http.AuthRoutes(api)
 	http.BeachRoutes(api)
+	http.SavedBeachRoutes(api)
 	r.Run(":8080")
 }
