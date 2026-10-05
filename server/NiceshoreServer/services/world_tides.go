@@ -29,6 +29,15 @@ type WorldTidesTime struct {
 	time.Time
 }
 
+type TidePrediction struct {
+	Direction      string    `json:"direction"`
+	CurrentHeight  float64   `json:"current_height"`
+	CurrentTime    time.Time `json:"current_time"`
+	UpcomingHeight float64   `json:"upcoming_height"`
+	UpcomingTime   time.Time `json:"upcoming_time"`
+	Change         float64   `json:"change"`
+}
+
 func (t *WorldTidesTime) UnmarshalJSON(data []byte) error {
 	value := strings.Trim(string(data), `"`)
 
@@ -129,5 +138,69 @@ func GetCurrentTide(tides *WorldTidesResponse, timezone string) (*CurrentTideRes
 	return &CurrentTideResponse{
 		Date:   closestHeight.Date.Time.In(loc),
 		Height: closestHeight.Height,
+	}, nil
+}
+
+func PredictTideDirection(
+	tides *WorldTidesResponse,
+	timezone string,
+) (*TidePrediction, error) {
+
+	if tides == nil || len(tides.Heights) < 2 {
+		return nil, fmt.Errorf("not enough tide data")
+	}
+
+	loc, err := time.LoadLocation(timezone)
+	if err != nil {
+		return nil, fmt.Errorf("invalid timezone: %w", err)
+	}
+
+	now := time.Now().In(loc)
+
+	// Find the latest tide measurement that has already happened.
+	currentIndex := -1
+
+	for i, height := range tides.Heights {
+		tideTime := height.Date.Time.In(loc)
+
+		if !tideTime.After(now) {
+			currentIndex = i
+		} else {
+			break
+		}
+	}
+
+	// We need a current measurement AND a future measurement.
+	if currentIndex == -1 || currentIndex >= len(tides.Heights)-1 {
+		return nil, fmt.Errorf("no upcoming tide data available")
+	}
+
+	current := tides.Heights[currentIndex]
+	upcoming := tides.Heights[currentIndex+1]
+
+	currentTime := current.Date.Time.In(loc)
+	upcomingTime := upcoming.Date.Time.In(loc)
+
+	change := upcoming.Height - current.Height
+
+	// Difference in height.
+	// Adjust this threshold depending on your WorldTides data interval.
+	const slackThreshold = 0.03
+
+	direction := "slack"
+
+	if change > slackThreshold {
+		direction = "rising"
+	} else if change < -slackThreshold {
+		direction = "falling"
+	}
+
+	return &TidePrediction{
+		Direction:      direction,
+		CurrentHeight:  current.Height,
+		CurrentTime:    currentTime,
+		UpcomingHeight: upcoming.Height,
+		UpcomingTime:   upcomingTime,
+		Change:         change,
 	}, nil
 }
