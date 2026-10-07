@@ -3,11 +3,14 @@ package Controller
 import (
 	"net/http"
 
+	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/config"
 	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/models"
 	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/models/dto"
 	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/repository"
+	"github.com/LibanMoo/NiceShore/server/NiceshoreServer/services"
 
 	"fmt"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -82,7 +85,6 @@ func GetSavedBeaches(c *gin.Context) {
 	userIDString := c.Param("userId")
 
 	userID, err := uuid.Parse(userIDString)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid user ID",
@@ -91,7 +93,6 @@ func GetSavedBeaches(c *gin.Context) {
 	}
 
 	beaches, err := repository.GetSavedBeaches(userID)
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to retrieve saved beaches",
@@ -99,8 +100,95 @@ func GetSavedBeaches(c *gin.Context) {
 		return
 	}
 
+	config.LoadEnv()
+	apiKey := os.Getenv("WORLD_TIDES_API_KEY")
+
+	if apiKey == "" {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "WorldTides API key is not configured",
+		})
+		return
+	}
+
+	var response []dto.SavedBeachResponseDTO
+
+	for _, beach := range beaches {
+
+		tides, err := services.GetTides(
+			beach.Latitude,
+			beach.Longitude,
+			apiKey,
+		)
+
+		if err != nil {
+			c.JSON(http.StatusBadGateway, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		currentTide, err := services.GetCurrentTide(tides, beach.Timezone)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Failed to retrieve current tide",
+			})
+			return
+		}
+		var currentTideDTO *dto.CurrentTideDTO
+
+		if currentTide != nil {
+			currentTideDTO = &dto.CurrentTideDTO{
+				Date:   currentTide.Date,
+				Height: currentTide.Height,
+			}
+		}
+
+		response = append(response, dto.SavedBeachResponseDTO{
+			ID:             beach.ID,
+			Name:           beach.Name,
+			Description:    beach.Description,
+			Latitude:       beach.Latitude,
+			Longitude:      beach.Longitude,
+			Status:         beach.Status,
+			CurrentTide:    currentTideDTO,
+			TidePrediction: nil,
+		})
+
+		tidePrediction, err := services.PredictTideDirection(tides, beach.Timezone)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Failed to predict tide direction",
+			})
+			return
+		}
+		var tidePredictionDTO *dto.TidePredictionDTO
+
+		if tidePrediction != nil {
+			tidePredictionDTO = &dto.TidePredictionDTO{
+				Direction:      tidePrediction.Direction,
+				CurrentHeight:  tidePrediction.CurrentHeight,
+				CurrentTime:    tidePrediction.CurrentTime,
+				UpcomingHeight: tidePrediction.UpcomingHeight,
+				UpcomingTime:   tidePrediction.UpcomingTime,
+				Change:         tidePrediction.Change,
+			}
+		}
+
+		response = append(response, dto.SavedBeachResponseDTO{
+			ID:             beach.ID,
+			Name:           beach.Name,
+			Description:    beach.Description,
+			Latitude:       beach.Latitude,
+			Longitude:      beach.Longitude,
+			Status:         beach.Status,
+			CurrentTide:    currentTideDTO,
+			TidePrediction: tidePredictionDTO,
+		})
+
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"beaches": beaches,
+		"beaches": response,
 	})
 }
 
