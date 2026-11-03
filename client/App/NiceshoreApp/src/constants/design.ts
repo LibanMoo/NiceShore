@@ -1,29 +1,27 @@
 /**
  * NiceShore "Coastal Precision" design tokens.
- * Source: Stitch export (login / sign_up screens + coastal_precision/DESIGN.md).
+ * Source: NiceShore Redesign canvas, "Brand & UI kit" artboard.
  */
 import type { TextStyle } from 'react-native';
 
 export const Palette = {
-  primary: '#001e40', // Deep Ocean – headlines, primary buttons
-  primaryContainer: '#003366',
+  primary: '#003366', // Deep Ocean – headlines, primary buttons, brand
   onPrimary: '#ffffff',
-  primaryFixed: '#d5e3ff',
+  primaryFixed: '#d9f5ff', // Cyan 15% – active chips, active tab, rising tide
 
-  secondary: '#00668a',
-  secondaryContainer: '#00bdfd', // Sky Cyan – focus rings, accents
-  secondaryFixed: '#c3e8ff',
+  secondary: '#00668a', // Sea Link – cyan for text: links and text actions
+  secondaryContainer: '#00bfff', // Sky Cyan – accents and focus, never text on white
 
-  background: '#f9f9fe',
-  sand: '#F5F7FA', // soft sandy grey canvas used on Sign Up
-  surface: '#ffffff', // surface-container-lowest (cards)
-  surfaceLow: '#f4f3f8', // surface-container-low (inputs, icon tiles)
-  surfaceContainer: '#eeedf2',
-  surfaceVariant: '#e2e2e7', // dividers, subtle borders
+  background: '#ffffff',
+  sand: '#f5f7fa', // Sandy Grey – input fills and secondary surfaces
+  surface: '#ffffff',
+  surfaceLow: '#f5f7fa',
+  surfaceVariant: '#e2e8f0', // Mist – dividers, static card borders
 
-  onSurface: '#1a1c1f',
-  onSurfaceVariant: '#43474f',
-  outline: '#737780',
+  onSurface: '#111c2c', // typed input text
+  onSurfaceVariant: '#4a5568', // Slate – body text, labels, inactive tabs
+  outline: '#8a94a6', // input borders
+  placeholder: '#5f6b7a',
 
   error: '#BA1A1A',
   errorContainer: '#ffdad6',
@@ -52,12 +50,11 @@ export const FontAssets = {
  * instead of `fontWeight` (Android ignores fontWeight on custom fonts).
  */
 export const Type = {
-  headlineXl: { fontFamily: FontFamily.bold, fontSize: 40, lineHeight: 48, letterSpacing: -0.8 },
-  headlineLg: { fontFamily: FontFamily.bold, fontSize: 32, lineHeight: 40, letterSpacing: -0.64 },
-  headlineMd: { fontFamily: FontFamily.semiBold, fontSize: 24, lineHeight: 32 },
-  bodyLg: { fontFamily: FontFamily.regular, fontSize: 18, lineHeight: 28 },
+  headlineLg: { fontFamily: FontFamily.bold, fontSize: 32, lineHeight: 40, letterSpacing: -0.32 },
+  headlineMd: { fontFamily: FontFamily.bold, fontSize: 22, lineHeight: 28 },
+  cardTitle: { fontFamily: FontFamily.bold, fontSize: 18, lineHeight: 28 },
   bodyMd: { fontFamily: FontFamily.regular, fontSize: 16, lineHeight: 24 },
-  bodySm: { fontFamily: FontFamily.medium, fontSize: 13, lineHeight: 18 },
+  bodySm: { fontFamily: FontFamily.regular, fontSize: 14, lineHeight: 20 },
   button: { fontFamily: FontFamily.semiBold, fontSize: 16, lineHeight: 20 },
   labelCaps: {
     fontFamily: FontFamily.bold,
@@ -79,16 +76,16 @@ export const Space = {
 export const Radius = {
   sm: 4,
   md: 8,
-  lg: 12, // buttons, inputs, small cards
-  xl: 16, // large cards
+  lg: 12, // buttons, inputs
+  xl: 16, // stat tiles
+  xxl: 24, // cards
   full: 9999,
 } as const;
 
 /** Ambient shadows tinted with Deep Ocean blue, per the design system. */
 export const Shadow = {
-  card: '0px 8px 32px 0px rgba(0, 51, 102, 0.08)',
-  tile: '0px 4px 16px 0px rgba(0, 51, 102, 0.05)',
-  button: '0px 4px 16px 0px rgba(0, 30, 64, 0.2)',
+  card: '0px 10px 25px -5px rgba(0, 51, 102, 0.08)',
+  focus: '0px 0px 0px 4px rgba(0, 191, 255, 0.2)',
 } as const;
 
 export const AuthCardMaxWidth = 448;
