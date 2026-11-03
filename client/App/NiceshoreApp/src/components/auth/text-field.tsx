@@ -1,4 +1,4 @@
-import { useState, type ReactNode, type Ref } from 'react';
+import { useState, type Ref } from 'react';
 import {
   Pressable,
   StyleSheet,
@@ -10,16 +10,17 @@ import {
 } from 'react-native';
 
 import { Icon, type IconName } from '@/components/ui/icon';
-import { FontFamily, Palette, Radius, Space, Type } from '@/constants/design';
+import { FontFamily, Palette, Radius, Shadow, Space, Type } from '@/constants/design';
+
+const ICON_SIZE = 20;
+const ICON_INSET = 16;
 
 type TextFieldProps = Omit<TextInputProps, 'style'> & {
   label: string;
   icon: IconName;
-  /** Colour of the focus ring. Login uses Deep Ocean, Sign Up uses Sky Cyan. */
-  focusColor?: string;
   error?: string;
-  /** Element shown on the right of the label row, e.g. "Forgot Password?". */
-  labelAccessory?: ReactNode;
+  /** Helper text under the field. An error replaces it. */
+  hint?: string;
   /** Adds a show/hide toggle and hides the text by default. */
   password?: boolean;
   ref?: Ref<TextInputInstance>;
@@ -28,9 +29,8 @@ type TextFieldProps = Omit<TextInputProps, 'style'> & {
 export function TextField({
   label,
   icon,
-  focusColor = Palette.primary,
   error,
-  labelAccessory,
+  hint,
   password = false,
   onFocus,
   onBlur,
@@ -40,19 +40,16 @@ export function TextField({
   const [focused, setFocused] = useState(false);
   const [hidden, setHidden] = useState(password);
 
-  const ringColor = error ? Palette.error : focused ? focusColor : 'transparent';
+  const borderColor = error ? Palette.error : focused ? Palette.secondaryContainer : Palette.outline;
 
   return (
     <View style={styles.field}>
-      <View style={styles.labelRow}>
-        <Text style={styles.label}>{label}</Text>
-        {labelAccessory}
-      </View>
+      <Text style={styles.label}>{label}</Text>
 
-      <View style={[styles.inputWrap, { borderColor: ringColor }]}>
+      <View style={[styles.inputWrap, focused && styles.inputFocused, { borderColor }]}>
         <Icon
           name={icon}
-          size={22}
+          size={ICON_SIZE}
           color={error ? Palette.error : Palette.onSurfaceVariant}
           style={styles.leadingIcon}
         />
@@ -60,9 +57,9 @@ export function TextField({
           ref={ref}
           {...inputProps}
           secureTextEntry={hidden}
-          placeholderTextColor={Palette.outline}
-          selectionColor={focusColor}
-          cursorColor={focusColor}
+          placeholderTextColor={Palette.placeholder}
+          selectionColor={Palette.secondaryContainer}
+          cursorColor={Palette.primary}
           onFocus={(e) => {
             setFocused(true);
             onFocus?.(e);
@@ -77,17 +74,15 @@ export function TextField({
         {password && (
           <Pressable
             onPress={() => setHidden((h) => !h)}
-            hitSlop={10}
             style={styles.trailing}
             accessibilityRole="button"
             accessibilityLabel={hidden ? 'Show password' : 'Hide password'}>
-            {({ pressed }) => (
-              <Icon
-                name={hidden ? 'visibilityOff' : 'visibility'}
-                size={22}
-                color={pressed ? Palette.primary : Palette.onSurfaceVariant}
-              />
-            )}
+            <Icon
+              name={hidden ? 'visibility' : 'visibilityOff'}
+              size={ICON_SIZE}
+              color={Palette.primary}
+              accent={Palette.secondaryContainer}
+            />
           </Pressable>
         )}
       </View>
@@ -96,22 +91,16 @@ export function TextField({
         <Text style={styles.error} accessibilityLiveRegion="polite">
           {error}
         </Text>
+      ) : hint ? (
+        <Text style={styles.hint}>{hint}</Text>
       ) : null}
     </View>
   );
 }
 
-const ICON_SIZE = 22;
-const ICON_INSET = 14;
-
 const styles = StyleSheet.create({
   field: {
     gap: Space.stackSm,
-  },
-  labelRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
   },
   label: {
     ...Type.labelCaps,
@@ -120,10 +109,14 @@ const styles = StyleSheet.create({
   inputWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Palette.surfaceLow,
+    height: 52,
+    backgroundColor: Palette.sand,
     borderRadius: Radius.lg,
-    borderWidth: 2,
-    minHeight: 52,
+    borderWidth: 1,
+  },
+  inputFocused: {
+    backgroundColor: Palette.surface,
+    boxShadow: Shadow.focus,
   },
   leadingIcon: {
     position: 'absolute',
@@ -132,25 +125,33 @@ const styles = StyleSheet.create({
   input: {
     ...Type.bodyMd,
     flex: 1,
+    height: '100%',
     color: Palette.onSurface,
-    paddingVertical: 12,
-    paddingLeft: ICON_INSET + ICON_SIZE + 10,
-    paddingRight: 16,
+    paddingVertical: 0,
+    paddingLeft: 48,
+    paddingRight: ICON_INSET,
     // Removes the browser focus outline on web; we draw our own ring.
     outlineWidth: 0,
   },
   inputWithTrailing: {
-    paddingRight: ICON_INSET + ICON_SIZE + 10,
+    paddingRight: 52,
   },
   trailing: {
     position: 'absolute',
-    right: ICON_INSET,
+    right: 4,
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  hint: {
+    ...Type.bodySm,
+    color: Palette.onSurfaceVariant,
   },
   error: {
     fontFamily: FontFamily.medium,
     fontSize: 13,
     lineHeight: 18,
     color: Palette.error,
-    paddingLeft: 4,
   },
 });

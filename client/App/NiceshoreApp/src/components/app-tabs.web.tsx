@@ -55,10 +55,10 @@ function TabButton({
   const color = isFocused ? Palette.primary : Palette.onSurfaceVariant;
   return (
     <Pressable {...(props as PressableProps)} style={({ pressed }) => [styles.tab, pressed && styles.pressed]}>
-      <View style={[styles.tabInner, isFocused && styles.tabActive]}>
+      <View style={[styles.indicator, isFocused && styles.indicatorActive]}>
         <Icon name={icon} size={24} color={color} />
-        <Text style={[styles.label, { color }]}>{children}</Text>
       </View>
+      <Text style={[styles.label, isFocused && styles.labelActive, { color }]}>{children}</Text>
     </Pressable>
   );
 }
@@ -70,41 +70,46 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     alignItems: 'center',
-    backgroundColor: 'rgba(249, 249, 254, 0.85)',
-    backdropFilter: 'blur(24px)',
-    boxShadow: '0px -8px 32px 0px rgba(0, 51, 102, 0.08)',
-    borderTopLeftRadius: Radius.lg,
-    borderTopRightRadius: Radius.lg,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    backdropFilter: 'blur(12px)',
+    borderTopWidth: 1,
+    borderTopColor: Palette.surfaceVariant,
+    boxShadow: '0px -10px 25px -5px rgba(0, 51, 102, 0.08)',
     paddingTop: 8,
-    paddingBottom: 20,
+    paddingBottom: 24,
+    paddingHorizontal: 8,
   } as object,
   inner: {
     width: '100%',
     maxWidth: 560,
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: 16,
   },
   tab: {
+    flex: 1,
+    minHeight: 56,
     alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
   },
   pressed: {
     transform: [{ scale: 0.92 }],
   },
-  tabInner: {
+  indicator: {
+    width: 64,
+    height: 32,
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 4,
-    borderRadius: Radius.lg,
+    justifyContent: 'center',
+    borderRadius: Radius.full,
   },
-  tabActive: {
-    backgroundColor: 'rgba(0, 189, 253, 0.2)',
+  indicatorActive: {
+    backgroundColor: Palette.primaryFixed,
   },
   label: {
-    fontFamily: FontFamily.bold,
+    fontFamily: FontFamily.semiBold,
     fontSize: 12,
     lineHeight: 16,
-    letterSpacing: 0.6,
-    marginTop: 4,
+  },
+  labelActive: {
+    fontFamily: FontFamily.bold,
   },
 });

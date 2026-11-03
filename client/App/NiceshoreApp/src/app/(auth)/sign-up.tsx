@@ -2,16 +2,18 @@ import { router } from 'expo-router';
 import { useRef, useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text, View, type TextInputInstance } from 'react-native';
 
+import { AuthPrompt } from '@/components/auth/auth-prompt';
 import { AuthScreen } from '@/components/auth/auth-screen';
 import { FormError } from '@/components/auth/form-error';
-import { GlowOrb } from '@/components/auth/glow-orb';
 import { PrimaryButton } from '@/components/auth/primary-button';
-import { SocialAuth } from '@/components/auth/social-auth';
 import { TextField } from '@/components/auth/text-field';
-import { FontFamily, Palette, Shadow, Space, Type } from '@/constants/design';
+import { Icon } from '@/components/ui/icon';
+import { Logo } from '@/components/ui/logo';
+import { Palette, Radius, Space, Type } from '@/constants/design';
 import { useAuth } from '@/context/auth-context';
 import {
   formatDateInput,
+  MIN_PASSWORD_LENGTH,
   parseDateInput,
   validateDateOfBirth,
   validateEmail,
@@ -83,172 +85,148 @@ export default function SignUpScreen() {
     }
   };
 
-  const goToSignIn = () => {
+  const goToLogin = () => {
     if (router.canGoBack()) router.back();
     else router.replace('/login');
   };
 
   return (
     <AuthScreen
-      backgroundColor={Palette.sand}
-      background={
-        <>
-          <GlowOrb rgb="0, 189, 253" size={460} opacity={0.16} top={-170} left={-190} />
-          <GlowOrb rgb="0, 30, 64" size={420} opacity={0.12} bottom={-160} right={-170} />
-        </>
-      }>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.title}>Create Account</Text>
-        <Text style={styles.subtitle}>Join the coastal community and plan your perfect beach day.</Text>
-      </View>
-
-      {/* Glassmorphic card */}
-      <View style={styles.card}>
-        <View style={styles.form}>
-          <FormError message={formError} />
-
-          <TextField
-            label="Full Name"
-            icon="person"
-            focusColor={Palette.secondaryContainer}
-            value={values.fullName}
-            onChangeText={(v) => update('fullName', v)}
-            error={errors.fullName}
-            placeholder="Jane Doe"
-            autoCapitalize="words"
-            autoComplete="name"
-            textContentType="name"
-            returnKeyType="next"
-            submitBehavior="submit"
-            onSubmitEditing={() => emailRef.current?.focus()}
-          />
-
-          <TextField
-            ref={emailRef}
-            label="Email Address"
-            icon="mail"
-            focusColor={Palette.secondaryContainer}
-            value={values.email}
-            onChangeText={(v) => update('email', v)}
-            error={errors.email}
-            placeholder="jane@example.com"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoComplete="email"
-            textContentType="emailAddress"
-            returnKeyType="next"
-            submitBehavior="submit"
-            onSubmitEditing={() => passwordRef.current?.focus()}
-          />
-
-          <TextField
-            ref={passwordRef}
-            label="Password"
-            icon="lock"
-            password
-            focusColor={Palette.secondaryContainer}
-            value={values.password}
-            onChangeText={(v) => update('password', v)}
-            error={errors.password}
-            placeholder="••••••••"
-            autoCapitalize="none"
-            autoComplete="new-password"
-            textContentType="newPassword"
-            returnKeyType="next"
-            submitBehavior="submit"
-            onSubmitEditing={() => dobRef.current?.focus()}
-          />
-
-          <TextField
-            ref={dobRef}
-            label="Date of Birth"
-            icon="calendar"
-            focusColor={Palette.secondaryContainer}
-            value={values.dob}
-            onChangeText={(v) => update('dob', v)}
-            error={errors.dob}
-            placeholder="DD/MM/YYYY"
-            keyboardType={Platform.OS === 'web' ? 'default' : 'number-pad'}
-            inputMode="numeric"
-            autoComplete="birthdate-full"
-            maxLength={10}
-            returnKeyType="done"
-            onSubmitEditing={handleSubmit}
-          />
-
-          <View style={styles.submit}>
-            <PrimaryButton title="Create Account" loading={loading} onPress={handleSubmit} />
-          </View>
-        </View>
-
-        <View style={styles.social}>
-          <SocialAuth caption="Or sign up with" />
-        </View>
-      </View>
-
-      {/* Footer */}
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>Already have an account? </Text>
-        <Pressable hitSlop={8} accessibilityRole="link" onPress={goToSignIn}>
-          {({ pressed }) => (
-            <Text style={[styles.footerLink, pressed && styles.linkPressed]}>Sign In</Text>
-          )}
+      paddingTop={12}
+      gap={28}
+      footer={<AuthPrompt text="Already have an account?" action="Log in" onPress={goToLogin} />}>
+      <View style={styles.topBar}>
+        <Pressable
+          onPress={goToLogin}
+          accessibilityRole="button"
+          accessibilityLabel="Back to log in"
+          style={({ pressed }) => [styles.back, pressed && styles.backPressed]}>
+          <Icon name="arrowBack" color={Palette.primary} />
         </Pressable>
+        <Logo markSize={28} fontSize={18} lineHeight={24} gap={8} />
+        <View style={styles.topBarSpacer} />
+      </View>
+
+      <View style={styles.header}>
+        <Text style={styles.title} accessibilityRole="header">
+          Create your account
+        </Text>
+        <Text style={styles.subtitle}>Save your favourite beaches and get tide alerts.</Text>
+      </View>
+
+      <View style={styles.form}>
+        <FormError message={formError} />
+
+        <TextField
+          label="Full name"
+          icon="person"
+          value={values.fullName}
+          onChangeText={(v) => update('fullName', v)}
+          error={errors.fullName}
+          placeholder="Your full name"
+          autoCapitalize="words"
+          autoComplete="name"
+          textContentType="name"
+          returnKeyType="next"
+          submitBehavior="submit"
+          onSubmitEditing={() => emailRef.current?.focus()}
+        />
+
+        <TextField
+          ref={emailRef}
+          label="Email address"
+          icon="mail"
+          value={values.email}
+          onChangeText={(v) => update('email', v)}
+          error={errors.email}
+          placeholder="you@example.com"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          autoComplete="email"
+          textContentType="emailAddress"
+          returnKeyType="next"
+          submitBehavior="submit"
+          onSubmitEditing={() => passwordRef.current?.focus()}
+        />
+
+        <TextField
+          ref={passwordRef}
+          label="Password"
+          icon="lock"
+          password
+          value={values.password}
+          onChangeText={(v) => update('password', v)}
+          error={errors.password}
+          hint={`At least ${MIN_PASSWORD_LENGTH} characters, with a letter and a number.`}
+          placeholder="Create a password"
+          autoCapitalize="none"
+          autoComplete="new-password"
+          textContentType="newPassword"
+          returnKeyType="next"
+          submitBehavior="submit"
+          onSubmitEditing={() => dobRef.current?.focus()}
+        />
+
+        <TextField
+          ref={dobRef}
+          label="Date of birth"
+          icon="calendar"
+          value={values.dob}
+          onChangeText={(v) => update('dob', v)}
+          error={errors.dob}
+          placeholder="DD/MM/YYYY"
+          keyboardType={Platform.OS === 'web' ? 'default' : 'number-pad'}
+          inputMode="numeric"
+          autoComplete="birthdate-full"
+          maxLength={10}
+          returnKeyType="done"
+          onSubmitEditing={handleSubmit}
+        />
+
+        <View style={styles.submit}>
+          <PrimaryButton title="Create account" loading={loading} onPress={handleSubmit} />
+        </View>
       </View>
     </AuthScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  header: {
+  topBar: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: Space.stackLg,
+    justifyContent: 'space-between',
+    height: 56,
+  },
+  back: {
+    width: 44,
+    height: 44,
+    borderRadius: Radius.full,
+    backgroundColor: Palette.sand,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backPressed: {
+    backgroundColor: Palette.surfaceVariant,
+  },
+  topBarSpacer: {
+    width: 44,
+  },
+  header: {
+    gap: Space.stackSm,
   },
   title: {
-    ...Type.headlineXl,
+    ...Type.headlineLg,
     color: Palette.primary,
-    textAlign: 'center',
-    marginBottom: Space.stackSm,
   },
   subtitle: {
-    ...Type.bodyLg,
+    ...Type.bodyMd,
     color: Palette.onSurfaceVariant,
-    textAlign: 'center',
-  },
-  card: {
-    backgroundColor: 'rgba(255, 255, 255, 0.82)',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(226, 226, 231, 0.6)',
-    boxShadow: Shadow.card,
-    padding: Space.gutter,
   },
   form: {
-    gap: Space.stackMd,
+    gap: 20,
   },
   submit: {
-    marginTop: Space.stackSm,
-  },
-  social: {
-    marginTop: Space.gutter,
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    marginTop: Space.stackLg,
-  },
-  footerText: {
-    ...Type.bodyMd,
-    color: Palette.onSurfaceVariant,
-  },
-  footerLink: {
-    ...Type.bodyMd,
-    fontFamily: FontFamily.bold,
-    color: Palette.primary,
-  },
-  linkPressed: {
-    opacity: 0.6,
+    marginTop: 4,
   },
 });

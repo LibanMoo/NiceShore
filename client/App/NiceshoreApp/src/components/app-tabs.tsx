@@ -7,10 +7,10 @@ export default function AppTabs() {
   return (
     <NativeTabs
       backgroundColor={Palette.surface}
-      indicatorColor="rgba(0, 189, 253, 0.2)"
+      indicatorColor={Palette.primaryFixed}
       iconColor={{ default: Palette.onSurfaceVariant, selected: Palette.primary }}
       labelStyle={{
-        default: { color: Palette.onSurfaceVariant, fontFamily: FontFamily.bold, fontSize: 12 },
+        default: { color: Palette.onSurfaceVariant, fontFamily: FontFamily.semiBold, fontSize: 12 },
         selected: { color: Palette.primary, fontFamily: FontFamily.bold, fontSize: 12 },
       }}>
       <NativeTabs.Trigger name="index">

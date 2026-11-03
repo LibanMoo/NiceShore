@@ -1,9 +1,9 @@
 import { Image } from 'expo-image';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { formatTime, TIDE_TREND } from '@/components/home/tide-trend';
+import { TIDE_TREND } from '@/components/home/tide-trend';
 import { Icon } from '@/components/ui/icon';
-import { FontFamily, Palette, Radius, Shadow, Space, Type } from '@/constants/design';
+import { FontFamily, Palette, Radius, Shadow, Type } from '@/constants/design';
 import type { FeaturedBeach } from '@/data/beaches';
 
 type FeaturedBeachCardProps = {
@@ -18,61 +18,54 @@ export function FeaturedBeachCard({ beach, onPress }: FeaturedBeachCardProps) {
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityLabel={`Featured destination: ${beach.name}`}
+      accessibilityLabel={`Featured beach: ${beach.name}`}
       style={({ pressed }) => [styles.card, pressed && styles.pressed]}>
-      <View style={styles.imageWrap}>
-        <Image
-          source={{ uri: beach.image }}
-          style={StyleSheet.absoluteFill}
-          contentFit="cover"
-          transition={250}
-          placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
-        />
-      </View>
+      <Image source={beach.image} style={styles.image} contentFit="cover" transition={250} />
 
       <View style={styles.content}>
-        <View>
+        <View style={styles.heading}>
           <Text style={styles.name}>{beach.name}</Text>
           <View style={styles.locationRow}>
-            <Icon name="locationOn" size={22} color={Palette.onSurfaceVariant} />
+            <Icon
+              name="locationOn"
+              size={18}
+              color={Palette.primary}
+              accent={Palette.secondaryContainer}
+            />
             <Text style={styles.location}>{beach.location}</Text>
           </View>
         </View>
 
         <View style={styles.stats}>
           <View style={styles.stat}>
-            <Text style={styles.statLabel}>Current Tide</Text>
+            <Text style={styles.statLabel}>Current tide</Text>
             <View style={styles.statValueRow}>
               <Text style={styles.statValue}>{beach.tideHeightM.toFixed(1)} m</Text>
-              <Icon name={trend.icon} size={22} color={trend.color} />
+              <Icon name={trend.icon} size={18} strokeWidth={2.5} color={trend.iconColor} />
             </View>
           </View>
           <View style={styles.stat}>
-            <Text style={styles.statLabel}>Water Temp</Text>
+            <Text style={styles.statLabel}>Water temp</Text>
             <Text style={styles.statValue}>{beach.waterTempC}°C</Text>
           </View>
         </View>
 
         <View style={styles.tides}>
-          <TideRow
-            label="Next High Tide"
-            value={`${formatTime(beach.nextHighTide.time)} (${beach.nextHighTide.heightM}m)`}
-          />
-          <TideRow
-            label="Next Low Tide"
-            value={`${formatTime(beach.nextLowTide.time)} (${beach.nextLowTide.heightM}m)`}
-          />
+          <TideRow label="Next high tide" tide={beach.nextHighTide} />
+          <TideRow label="Next low tide" tide={beach.nextLowTide} />
         </View>
       </View>
     </Pressable>
   );
 }
 
-function TideRow({ label, value }: { label: string; value: string }) {
+function TideRow({ label, tide }: { label: string; tide: FeaturedBeach['nextHighTide'] }) {
   return (
     <View style={styles.tideRow}>
       <Text style={styles.tideLabel}>{label}</Text>
-      <Text style={styles.tideValue}>{value}</Text>
+      <Text style={styles.tideValue}>
+        {tide.time} · {tide.heightM} m
+      </Text>
     </View>
   );
 }
@@ -80,27 +73,29 @@ function TideRow({ label, value }: { label: string; value: string }) {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: Palette.surface,
-    borderRadius: 32,
-    padding: Space.stackLg,
-    gap: Space.gutter,
+    borderRadius: Radius.xxl,
+    borderWidth: 1,
+    borderColor: Palette.surfaceVariant,
     boxShadow: Shadow.card,
+    overflow: 'hidden',
   },
   pressed: {
     transform: [{ scale: 0.99 }],
   },
-  imageWrap: {
-    height: 256,
-    borderRadius: 24,
-    overflow: 'hidden',
-    backgroundColor: Palette.surfaceContainer,
+  image: {
+    height: 200,
+    backgroundColor: Palette.surfaceVariant,
   },
   content: {
-    gap: Space.gutter,
+    padding: 32,
+    gap: 24,
+  },
+  heading: {
+    gap: 4,
   },
   name: {
-    ...Type.headlineLg,
+    ...Type.headlineMd,
     color: Palette.primary,
-    marginBottom: 4,
   },
   locationRow: {
     flexDirection: 'row',
@@ -108,46 +103,44 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   location: {
-    ...Type.bodyLg,
+    ...Type.bodyMd,
     color: Palette.onSurfaceVariant,
     flexShrink: 1,
   },
   stats: {
     flexDirection: 'row',
-    gap: Space.stackMd,
+    gap: 12,
   },
   stat: {
     flex: 1,
-    backgroundColor: Palette.surfaceLow,
-    borderRadius: Radius.lg,
-    padding: Space.stackMd,
+    gap: 4,
+    padding: 16,
+    borderRadius: Radius.xl,
+    backgroundColor: Palette.sand,
   },
   statLabel: {
     ...Type.labelCaps,
-    textTransform: 'none',
-    color: Palette.outline,
-    marginBottom: 4,
+    color: Palette.onSurfaceVariant,
   },
   statValueRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Space.stackSm,
+    gap: 6,
   },
   statValue: {
     ...Type.headlineMd,
     color: Palette.primary,
   },
   tides: {
-    gap: Space.stackSm,
-    paddingTop: Space.stackMd,
+    gap: 12,
+    paddingTop: 20,
     borderTopWidth: 1,
     borderTopColor: Palette.surfaceVariant,
   },
   tideRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: Space.stackSm,
+    gap: 12,
   },
   tideLabel: {
     ...Type.bodyMd,
@@ -155,7 +148,7 @@ const styles = StyleSheet.create({
   },
   tideValue: {
     ...Type.bodyMd,
-    fontFamily: FontFamily.medium,
+    fontFamily: FontFamily.semiBold,
     color: Palette.primary,
   },
 });

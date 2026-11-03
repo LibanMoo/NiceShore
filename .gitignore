@@ -1,0 +1,7 @@
+# Dependencies (any package in the repo)
+node_modules/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.claude
