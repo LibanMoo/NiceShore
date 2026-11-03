@@ -33,11 +33,10 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: Palette.primary,
     borderRadius: Radius.lg,
-    minHeight: 52,
-    paddingVertical: 14,
+    height: 52,
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: Shadow.button,
+    boxShadow: Shadow.card,
   },
   pressed: {
     opacity: 0.9,
