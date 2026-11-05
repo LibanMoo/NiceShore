@@ -54,6 +54,8 @@ export default function HomeScreen() {
     );
   }, [query]);
 
+  const openBeach = (id: string) => router.push({ pathname: '/beach/[id]', params: { id } });
+
   const handleUseLocation = () => {
     // TODO: `npx expo install expo-location`, request permission, then sort
     // nearby beaches by distance from the user's coordinates.
@@ -171,7 +173,7 @@ export default function HomeScreen() {
                 horizontal
                 data={beaches}
                 keyExtractor={(b) => b.id}
-                renderItem={({ item }) => <BeachCard beach={item} />}
+                renderItem={({ item }) => <BeachCard beach={item} onPress={() => openBeach(item.id)} />}
                 showsHorizontalScrollIndicator={false}
                 style={styles.carousel}
                 contentContainerStyle={styles.carouselContent}
@@ -191,7 +193,7 @@ export default function HomeScreen() {
             <Text style={styles.sectionTitle} accessibilityRole="header">
               Featured beach
             </Text>
-            <FeaturedBeachCard beach={featuredBeach} />
+            <FeaturedBeachCard beach={featuredBeach} onPress={() => openBeach(featuredBeach.id)} />
           </View>
         </View>
       </ScrollView>
