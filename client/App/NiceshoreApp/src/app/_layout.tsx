@@ -8,6 +8,7 @@ import '@/global.css';
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import { FontAssets } from '@/constants/design';
 import { AuthProvider, useAuth } from '@/context/auth-context';
+import { SavedBeachesProvider } from '@/context/saved-beaches-context';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -20,10 +21,12 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <AnimatedSplashOverlay />
-        <RootNavigator />
-      </ThemeProvider>
+      <SavedBeachesProvider>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <AnimatedSplashOverlay />
+          <RootNavigator />
+        </ThemeProvider>
+      </SavedBeachesProvider>
     </AuthProvider>
   );
 }
@@ -41,6 +44,7 @@ function RootNavigator() {
       {/* Signed in: the tab app. Signed-out visitors are sent to Login. */}
       <Stack.Protected guard={!!user} redirectTo="/login">
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="beach/[id]" />
       </Stack.Protected>
     </Stack>
   );
