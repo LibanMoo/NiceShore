@@ -31,12 +31,19 @@ export const TIDE_TREND: Record<
   },
 };
 
-export function TideChip({ trend }: { trend: TideTrend }) {
+export function TideChip({ trend, size = 'sm' }: { trend: TideTrend; size?: 'sm' | 'md' }) {
   const { label, icon, iconColor, background, textColor } = TIDE_TREND[trend];
+  const md = size === 'md';
   return (
-    <View style={[styles.chip, { backgroundColor: background }, trend === 'steady' && styles.outlined]}>
-      <Icon name={icon} size={14} strokeWidth={2.5} color={iconColor} />
-      <Text style={[styles.label, { color: textColor }]}>{label}</Text>
+    <View
+      style={[
+        styles.chip,
+        md && styles.chipMd,
+        { backgroundColor: background },
+        trend === 'steady' && styles.outlined,
+      ]}>
+      <Icon name={icon} size={md ? 16 : 14} strokeWidth={2.5} color={iconColor} />
+      <Text style={[styles.label, md && styles.labelMd, { color: textColor }]}>{label}</Text>
     </View>
   );
 }
@@ -54,6 +61,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: Radius.full,
   },
+  chipMd: {
+    gap: 6,
+    height: 32,
+    paddingHorizontal: 12,
+  },
   outlined: {
     borderWidth: 1,
     borderColor: Palette.outline,
@@ -62,5 +74,9 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.semiBold,
     fontSize: 13,
     lineHeight: 16,
+  },
+  labelMd: {
+    fontSize: 14,
+    lineHeight: 20,
   },
 });
