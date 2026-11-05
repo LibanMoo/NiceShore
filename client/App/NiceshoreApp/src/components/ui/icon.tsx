@@ -81,6 +81,16 @@ const ICONS = {
   bookmark: ({ color }: Strokes) => (
     <Path d="M7 3.5h10a1 1 0 0 1 1 1V21l-6-4-6 4V4.5a1 1 0 0 1 1-1z" stroke={color} />
   ),
+  bookmarkFilled: ({ color }: Strokes) => (
+    <Path d="M7 3.5h10a1 1 0 0 1 1 1V21l-6-4-6 4V4.5a1 1 0 0 1 1-1z" stroke={color} fill={color} />
+  ),
+  info: ({ color, accent }: Strokes) => (
+    <>
+      <Circle cx={12} cy={12} r={9} stroke={color} />
+      <Path d="M12 11v5" stroke={color} />
+      <Path d="M12 8h.01" stroke={accent} strokeWidth={2.5} />
+    </>
+  ),
   home: ({ color }: Strokes) => (
     <Path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z" stroke={color} />
   ),
