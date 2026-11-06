@@ -20,10 +20,10 @@ const ICONS = {
       <Path d="M8 11V8a4 4 0 0 1 8 0v3" stroke={color} />
     </>
   ),
-  person: ({ color }: Strokes) => (
+  person: ({ color, accent }: Strokes) => (
     <>
       <Circle cx={12} cy={8} r={4} stroke={color} />
-      <Path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5" stroke={color} />
+      <Path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5" stroke={accent} />
     </>
   ),
   calendar: ({ color }: Strokes) => (
@@ -76,8 +76,47 @@ const ICONS = {
   dash: ({ color }: Strokes) => <Path d="M5 12h14" stroke={color} />,
   close: ({ color }: Strokes) => <Path d="M6 6l12 12M18 6 6 18" stroke={color} />,
   logout: ({ color }: Strokes) => (
-    <Path d="M10 4H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4M15 8l4 4-4 4M19 12H10" stroke={color} />
+    <Path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11" stroke={color} />
   ),
+  chevronRight: ({ color }: Strokes) => <Path d="m9 6 6 6-6 6" stroke={color} />,
+  tune: ({ color, accent }: Strokes) => (
+    <>
+      <Path d="M4 7h9M17 7h3M4 17h3M11 17h9" stroke={color} />
+      <Circle cx={15} cy={7} r={2} stroke={accent} />
+      <Circle cx={9} cy={17} r={2} stroke={accent} />
+    </>
+  ),
+  bell: ({ color, accent }: Strokes) => (
+    <>
+      <Path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z" stroke={color} />
+      <Path d="M10 20.5a2 2 0 0 0 4 0" stroke={accent} />
+    </>
+  ),
+  globe: ({ color, accent }: Strokes) => (
+    <>
+      <Circle cx={12} cy={12} r={9} stroke={color} />
+      <Path
+        d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"
+        stroke={accent}
+      />
+    </>
+  ),
+  sun: ({ color, accent }: Strokes) => (
+    <>
+      <Circle cx={12} cy={12} r={4} stroke={color} />
+      <Path
+        d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"
+        stroke={accent}
+      />
+    </>
+  ),
+  shield: ({ color, accent }: Strokes) => (
+    <>
+      <Path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z" stroke={color} />
+      <Path d="m9 12 2 2 4-4" stroke={accent} />
+    </>
+  ),
+  trash: ({ color }: Strokes) => <Path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" stroke={color} />,
   bookmark: ({ color }: Strokes) => (
     <Path d="M7 3.5h10a1 1 0 0 1 1 1V21l-6-4-6 4V4.5a1 1 0 0 1 1-1z" stroke={color} />
   ),
