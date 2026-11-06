@@ -56,7 +56,7 @@ function TabButton({
   return (
     <Pressable {...(props as PressableProps)} style={({ pressed }) => [styles.tab, pressed && styles.pressed]}>
       <View style={[styles.indicator, isFocused && styles.indicatorActive]}>
-        <Icon name={icon} size={24} color={color} />
+        <Icon name={isFocused && icon === 'bookmark' ? 'bookmarkFilled' : icon} size={24} color={color} />
       </View>
       <Text style={[styles.label, isFocused && styles.labelActive, { color }]}>{children}</Text>
     </Pressable>
