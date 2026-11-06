@@ -17,14 +17,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BEACH_CARD_WIDTH, BeachCard } from '@/components/home/beach-card';
 import { FeaturedBeachCard } from '@/components/home/featured-beach-card';
 import { Icon } from '@/components/ui/icon';
-import { Logo } from '@/components/ui/logo';
+import { AppHeader, CircleButton } from '@/components/ui/app-header';
 import { FontFamily, Palette, Radius, Shadow, Space, Type } from '@/constants/design';
-import { BottomTabInset, MaxContentWidth } from '@/constants/theme';
+import { BottomTabInset, MaxContentWidth, WebTabBarHeight } from '@/constants/theme';
 import { useAuth } from '@/context/auth-context';
 import { featuredBeach, nearbyBeaches } from '@/data/beaches';
-
-/** Height of the web bottom navigation (see components/app-tabs.web.tsx). */
-const WebTabBarHeight = 89;
 
 function greeting(date = new Date()) {
   const h = date.getHours();
@@ -33,9 +30,9 @@ function greeting(date = new Date()) {
   return 'Good evening';
 }
 
-/** "liban mohamed" -> "Liban" */
+/** "liban mohamed" or "liban.mohamed" (from an email) -> "Liban" */
 function firstName(name: string) {
-  const first = name.trim().split(/\s+/)[0];
+  const first = name.trim().split(/[\s._-]+/)[0];
   return first.charAt(0).toUpperCase() + first.slice(1);
 }
 
@@ -66,19 +63,16 @@ export default function HomeScreen() {
     <View style={styles.root}>
       <StatusBar style="dark" />
 
-      {/* App header */}
-      <View style={[styles.appBar, { paddingTop: insets.top }]}>
-        <View style={styles.appBarInner}>
-          <Logo markSize={32} fontSize={20} lineHeight={28} gap={10} />
-          <Pressable
-            onPress={() => router.push('/profile')}
-            accessibilityRole="button"
+      <AppHeader
+        action={
+          <CircleButton
+            onPress={() => router.navigate('/profile')}
             accessibilityLabel="Your profile"
-            style={({ pressed }) => [styles.avatar, pressed && { opacity: 0.8 }]}>
+            background={Palette.primaryFixed}>
             <Text style={styles.avatarText}>{name.charAt(0)}</Text>
-          </Pressable>
-        </View>
-      </View>
+          </CircleButton>
+        }
+      />
 
       <ScrollView
         keyboardShouldPersistTaps="handled"
@@ -205,26 +199,6 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: Palette.background,
-  },
-  appBar: {
-    backgroundColor: Palette.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: Palette.surfaceVariant,
-  },
-  appBarInner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    height: 64,
-    paddingHorizontal: Space.marginMobile,
-  },
-  avatar: {
-    width: 44,
-    height: 44,
-    borderRadius: Radius.full,
-    backgroundColor: Palette.primaryFixed,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   avatarText: {
     ...Type.bodyMd,
